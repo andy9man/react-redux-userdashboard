@@ -1,31 +1,26 @@
 import React, { Component } from 'react';
-import axios from 'axios';
-import './App.css';
-
 import { connect } from 'react-redux'
-import { addNameToState } from './state/actions';
-import ListView from './ListView'
+import ListView from './ListView';
+import {INITIAL_VIEW} from './state/actions';
 
 class App extends Component {
   render() {
     return (
-      <ListView />
+      <div className="margin-vert-medium margin-horiz-medium" style={ {height: '100vh', width: '100vw'} }>
+        <header>
+          <h1><strong>User Dashboard</strong></h1>
+        </header>
+
+        { this.props.appViewState === INITIAL_VIEW && <ListView /> }
+      </div>
     );
   }
 }
 
-const getStateFromReduxPassToAppComponentAsProps = (state) => {
+const mapStateToProps = (state) => {
   return {
     appViewState: state.viewState
   }
 }
 
-// const getDispatchFromReduxToAppComponentAsProps = (dispatch) => {
-//   return {
-//     appInitialView(dispatchName) {
-//       dispatch(initialView(dispatchName))
-//     }
-//   }
-// }
-
-export default connect(getStateFromReduxPassToAppComponentAsProps)(App)
+export default connect(mapStateToProps)(App)
