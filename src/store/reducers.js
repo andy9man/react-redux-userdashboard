@@ -5,7 +5,7 @@ import {
   LOAD_DATA,
   LOAD_DATA_SUCCESS,
   DELETE_USER,
-  DELETE_RESET
+  STATE_RESET
 } from './actions'
 
 const intialState = {
@@ -13,7 +13,7 @@ const intialState = {
   userSelected: undefined,
   loadingData: false,
   loadingError: false,
-  deleteUser: false,
+  deleteUserSuccess: false,
   deletUserError: false,
   viewState: INITIAL_VIEW
 }
@@ -39,9 +39,14 @@ export const reducer = (state=intialState, action) => {
       const users = action.payload.map( user => new User(user) );
       return {...state, users: users, loadingData: false};
     case DELETE_USER:
-      return {...state, deleteUser: true};
-    case DELETE_RESET:
-      return {...state, deleteUser: false, deleteUserError: false}
+      return {...state, deleteUserSuccess: true};
+    case STATE_RESET:
+      return {
+        ...state,
+        deleteUserSuccess: false,
+        deleteUserError: false,
+        userSelected: undefined
+      }
 
     default:
       return state;

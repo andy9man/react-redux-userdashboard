@@ -10,7 +10,7 @@ export const LOAD_DATA_SUCCESS = 'LOAD_DATA_SUCCESS';
 export const LOAD_DATA_ERROR = 'LOAD_DATA_ERROR';
 
 export const DELETE_USER = 'DELETE_USER';
-export const DELETE_RESET = 'DELETE_RESET';
+export const STATE_RESET = 'DELETE_RESET';
 
 export const updateView = (view) => {
   return {type: UPDATE_VIEW, payload: view}
@@ -38,15 +38,16 @@ export const deleteUserSuccess = (bool) => {
 }
 
 
-export const getUsers = (address) => {
+export const getUsers = () => {
   return (dispatch, getState, url) => {
     dispatch( loadingData(true) );
 
-    console.log(`Getting User Data... ${url}/${address}`);
+    console.log(`Getting User Data... ${url}/users`);
 
-    axios.get(`${url}/${address}`)
+    axios.get(`${url}/users`)
       .then( ({data: users}) => {
-        setTimeout( () => { dispatch( loadingDataSuccess(users) ) }, 1500);
+        //setTimeout( () => { dispatch( loadingDataSuccess(users) ) }, 1000);
+        dispatch( loadingDataSuccess(users) );
       })
   }
 }
@@ -64,6 +65,7 @@ export const deleteUser = (userId) => {
     axios.delete(`${url}/users/${userId}`)
       .then( (response) => {
         dispatch( deleteUserSuccess(true) );
+        dispatch( getUsers() );
       })
       .catch( error => {
         if (error.response) {
@@ -84,6 +86,7 @@ export const deleteUser = (userId) => {
         }
         console.log("Error has occured in obtaining data...");
         console.log(error);
+
     })
   }
 }

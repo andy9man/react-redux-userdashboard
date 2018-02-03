@@ -3,9 +3,10 @@ import { connect } from 'react-redux';
 import {
   getUsers,
   updateView,
+  deleteUser,
   USER_SELECTED,
   USER_VIEW,
-  DELETE_RESET
+  STATE_RESET
 } from './store/actions';
 
 class ListView extends Component {
@@ -17,18 +18,13 @@ class ListView extends Component {
 
   render() {
     console.log(this.props);
-    this.props.deleteUser && setTimeout( () => {
-      this.props.getUsers('users');
-      this.props.deleteReset();
-    }, 2000);
+    this.props.deleteUserSuccess &&
+      setTimeout( () => {
+        this.props.stateReset();
+      }, 2000)
 
     return (
       <div className="padding-horiz-xlarge padding-vert-xlarge">
-        {this.props.deleteUser &&
-          <div style={ {position: 'fixed', bottom: 0, right: 10, zIndex: 1000} } data-notification="" class="notification-box success">
-            User was successfully deleted
-          </div>
-        }
 
         {this.props.loadingData && <div
           style={ {
@@ -77,7 +73,15 @@ class ListView extends Component {
                         }}>Show</button></li>
 
                       <li><button>Edit</button></li>
-                      <li><button className="alert">Delete</button></li>
+                      <li>
+                        <button
+                          onClick={
+                            () => {
+                              this.props.deleteUser(user.id);
+                            }}
+                          className="alert"
+                        >Delete</button>
+                      </li>
                     </ul>
                   </td>
                 </tr>
@@ -85,6 +89,14 @@ class ListView extends Component {
           </tbody>
 
         </table>
+
+        {/* -- ALERTS SECTION -- */}
+
+        {this.props.deleteUserSuccess &&
+          <div style={ {position: 'fixed', bottom: 0, right: 10, zIndex: 1000} } data-notification="" className="notification-box success">
+              User was successfully deleted
+          </div>
+        }
       </div>
     );
   }
@@ -95,15 +107,15 @@ const mapStateToProps = (state) => {
     viewState: state.viewState,
     loadingData: state.loadingData,
     loadingError: state.loadingError,
-    deleteUser: state.deleteUser,
+    deleteUserSuccess: state.deleteUserSuccess,
     users: state.users
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    getUsers(filter) {
-      dispatch( getUsers(filter) );
+    getUsers() {
+      dispatch( getUsers() );
     },
     userSelected(userId) {
       dispatch( {type: USER_SELECTED, payload: userId} );
@@ -111,8 +123,11 @@ const mapDispatchToProps = (dispatch) => {
     updateView(view) {
       dispatch( updateView(view) );
     },
-    deleteReset() {
-      dispatch( {type: DELETE_RESET} );
+    deleteUser(address, userId) {
+        dispatch( deleteUser(address, userId) );
+    },
+    stateReset() {
+      dispatch( {type: STATE_RESET} );
     }
   }
 }

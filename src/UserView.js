@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { updateUser, deleteUser, updateView, INITIAL_VIEW } from './store/actions';
+import { updateUser, deleteUser, updateView, INITIAL_VIEW, STATE_RESET } from './store/actions';
 
 const getUserFromId = (userId, users) => {
     return users.find(user => user.id === userId);
@@ -20,19 +20,40 @@ const UserView = props => {
 
             <div className="margin-vert-small">
                 <ul className="button-group tiny" style={ {marginBottom: '.5em', marginTop: '.5em'} }>
-                    <li><button className="button btn-cta">Edit</button></li>
-                    <li><button onClick={
-                        () => {
-                            props.deleteUser(props.userSelected);
-                            props.updateView(INITIAL_VIEW);
-                        }
-                    } className="button btn-cta alert">Delete</button></li>
+                    <li>
+                        <button
+                            className="button btn-cta"
+                            disabled={props.deleteUserSuccess}
+                        >Edit</button></li>
+                    <li>
+                        <button
+                            onClick={
+                                () => {
+                                    props.deleteUser(props.userSelected);
+                                }
+                            }
+                            className="button btn-cta alert"
+                            disabled={props.deleteUserSuccess}
+                        >Delete</button></li>
                 </ul>
 
                 <ul className="margin-top-medium button-group tiny" style={ {marginBottom: '.5em', marginTop: '.5em'} }>
-                    <li><button onClick={ () => (props.updateView(INITIAL_VIEW)) } className="button btn-cta tertiary">Back</button></li>
+                    <li>
+                        <button
+                            onClick={ () => {
+                                props.stateReset();
+                                props.updateView(INITIAL_VIEW);
+                             }}
+                             className="button btn-cta tertiary"
+                        >Back</button></li>
                 </ul>
             </div>
+
+            {props.deleteUserSuccess &&
+                <div style={ {position: 'fixed', bottom: 0, right: 10, zIndex: 1000} } data-notification="" className="notification-box success">
+                    User was successfully deleted
+                </div>
+            }
         </div>
     );
 }
@@ -40,6 +61,7 @@ const UserView = props => {
 const mapStateToProps = (state) => {
     return {
         userSelected: state.userSelected,
+        deleteUserSuccess: state.deleteUserSuccess,
         users: state.users
     }
 }
@@ -51,6 +73,9 @@ const mapDispatchToProps = (dispatch) => {
         },
         deleteUser(address, userId) {
             dispatch( deleteUser(address, userId) );
+        },
+        stateReset() {
+          dispatch( {type: STATE_RESET} );
         }
     }
 }
