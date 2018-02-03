@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
 import ListView from './ListView';
-import {INITIAL_VIEW} from './state/actions';
+import UserView from './UserView';
+import {INITIAL_VIEW, USER_VIEW} from './store/actions';
 
 class App extends Component {
   render() {
@@ -12,6 +13,7 @@ class App extends Component {
         </header>
 
         { this.props.appViewState === INITIAL_VIEW && <ListView /> }
+        { this.props.appViewState === USER_VIEW && <UserView /> }
       </div>
     );
   }
