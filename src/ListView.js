@@ -62,7 +62,7 @@ class ListView extends Component {
                   <td>{
                     ( (d) => {
                       d = new Date(parseInt(d, 10));
-                      return `${d.getMonth()+1}/${d.getDay()}/${d.getFullYear()}`;
+                      return `${d.getMonth()+1}/${d.getDay()+1}/${d.getFullYear()}`;
                     })(user.createdAt)
                   }</td>
                   <td className="valign-middle">
