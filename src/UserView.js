@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { updateUser, deleteUser, updateView, INITIAL_VIEW, STATE_RESET } from './store/actions';
+import { deleteUser, updateView, INITIAL_VIEW, EDIT_VIEW, STATE_RESET } from './store/actions';
 
 const getUserFromId = (userId, users) => {
     return users.find(user => user.id === userId);
@@ -12,7 +12,7 @@ const UserView = props => {
         <div className="padding-vert-large padding-horiz-large text-left">
             <h2 className="margin-bottom-medium">User View</h2>
             <div className="padding-vert-medium padding-horiz-medium bg-off-white">
-                <p><span style={ {marginRight: '20px'} }>Full Name:</span> {currentUser.name}</p>
+                <p><span style={ {marginRight: '20px'} }>Full Name:</span> {currentUser.firstName} {currentUser.lastName}</p>
                 <p><span style={ {marginRight: '20px'} }>Email:</span> {currentUser.email}</p>
                 <p><span style={ {marginRight: '20px'} }>Created At:</span> {currentUser.createdAt}</p>
                 <p><span style={ {marginRight: '20px'} }>User ID:</span> {currentUser.id}</p>
@@ -24,7 +24,9 @@ const UserView = props => {
                         <button
                             className="button btn-cta"
                             disabled={props.deleteUserSuccess}
-                        >Edit</button></li>
+                            onClick={props.updateView(EDIT_VIEW)}
+                        >Edit</button>
+                    </li>
                     <li>
                         <button
                             onClick={

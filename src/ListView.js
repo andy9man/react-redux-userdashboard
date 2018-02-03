@@ -6,6 +6,7 @@ import {
   deleteUser,
   USER_SELECTED,
   USER_VIEW,
+  EDIT_VIEW,
   STATE_RESET
 } from './store/actions';
 
@@ -56,7 +57,7 @@ class ListView extends Component {
             {!this.props.loadingData &&
               this.props.users.map( user => (
                 <tr key={user.id}>
-                  <td>{user.name}</td>
+                  <td>{`${user.firstName} ${user.lastName}`}</td>
                   <td>{user.email}</td>
                   <td>{
                     ( (d) => {
@@ -66,17 +67,25 @@ class ListView extends Component {
                   }</td>
                   <td className="valign-middle">
                     <ul className="button-group tiny" style={ {marginBottom: '.5em', marginTop: '.5em'} }>
-                      <li><button onClick={
-                        () => {
+
+                      <li><button onClick={ () => {
                           this.props.userSelected(user.id);
                           this.props.updateView(USER_VIEW);
-                        }}>Show</button></li>
+                        }}>View</button>
+                      </li>
 
-                      <li><button>Edit</button></li>
                       <li>
                         <button
-                          onClick={
-                            () => {
+                          onClick={ () => {
+                            this.props.userSelected(user.id);
+                            this.props.updateView(EDIT_VIEW);
+                          }}
+                        >Edit</button>
+                      </li>
+
+                      <li>
+                        <button
+                          onClick={ () => {
                               this.props.deleteUser(user.id);
                             }}
                           className="alert"

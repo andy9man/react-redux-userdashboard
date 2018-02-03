@@ -1,5 +1,6 @@
 import {
   UPDATE_VIEW,
+  EDIT_VIEW,
   USER_SELECTED,
   INITIAL_VIEW,
   LOAD_DATA,
@@ -15,14 +16,17 @@ const intialState = {
   loadingError: false,
   deleteUserSuccess: false,
   deletUserError: false,
+  editUserSuccess: false,
+  editUserError: false,
   viewState: INITIAL_VIEW
 }
 
 class User {
-  constructor( {id, createdAt, name, email} ) {
+  constructor( {id, createdAt, firstName, lastName, email} ) {
     this.id = id;
     this.createdAt = createdAt;
-    this.name = name;
+    this.firstName = firstName;
+    this.lastName = lastName;
     this.email = email;
   }
 }
@@ -45,6 +49,8 @@ export const reducer = (state=intialState, action) => {
         ...state,
         deleteUserSuccess: false,
         deleteUserError: false,
+        editUserSuccess: false,
+        editUserError: false,
         userSelected: undefined
       }
 
