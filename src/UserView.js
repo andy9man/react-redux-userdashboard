@@ -12,34 +12,42 @@ const UserView = props => {
         <div className="padding-vert-large padding-horiz-large text-left">
             <h2 className="margin-bottom-medium">User View</h2>
             <div className="padding-vert-medium padding-horiz-medium bg-off-white">
-                <p><span style={ {marginRight: '20px'} }>Full Name:</span> {currentUser.firstName} {currentUser.lastName}</p>
-                <p><span style={ {marginRight: '20px'} }>Email:</span> {currentUser.email}</p>
-                <p><span style={ {marginRight: '20px'} }>Created At:</span> {currentUser.createdAt}</p>
-                <p><span style={ {marginRight: '20px'} }>User ID:</span> {currentUser.id}</p>
+                <p><strong><span style={ {marginRight: '20px'} }>Full Name:</span></strong> {currentUser.firstName} {currentUser.lastName}</p>
+                <p><strong><span style={ {marginRight: '20px'} }>Email:</span></strong> {currentUser.email}</p>
+                <p><strong><span style={ {marginRight: '20px'} }>Created At:</span></strong> {
+                    ( (d) => {
+                        d = new Date(parseInt(d, 10));
+                        return `${d.getMonth()+1}/${d.getDay()+1}/${d.getFullYear()}`;
+                    })(currentUser.createdAt)}
+                </p>
+                <p><strong><span style={ {marginRight: '20px'} }>User ID:</span></strong> {currentUser.id}</p>
+
+                <div className="margin-top-medium">
+                    <ul className="button-group tiny" style={ {marginBottom: '.5em', marginTop: '.5em'} }>
+                        <li>
+                            <button
+                                id={props.userSelected + "viewEditButton"}
+                                className="button btn-cta"
+                                disabled={props.deleteUserSuccess}
+                                onClick={() => (props.updateView(EDIT_VIEW))}
+                            >Edit</button>
+                        </li>
+                        <li>
+                            <button
+                                onClick={
+                                    () => {
+                                        props.deleteUser(props.userSelected);
+                                    }
+                                }
+                                className="button btn-cta alert"
+                                disabled={props.deleteUserSuccess}
+                            >Delete</button></li>
+                    </ul>
+                </div>
             </div>
 
-            <div className="margin-vert-small">
+            <div className="margin-top-medium">
                 <ul className="button-group tiny" style={ {marginBottom: '.5em', marginTop: '.5em'} }>
-                    <li>
-                        <button
-                            className="button btn-cta"
-                            disabled={props.deleteUserSuccess}
-                            onClick={props.updateView(EDIT_VIEW)}
-                        >Edit</button>
-                    </li>
-                    <li>
-                        <button
-                            onClick={
-                                () => {
-                                    props.deleteUser(props.userSelected);
-                                }
-                            }
-                            className="button btn-cta alert"
-                            disabled={props.deleteUserSuccess}
-                        >Delete</button></li>
-                </ul>
-
-                <ul className="margin-top-medium button-group tiny" style={ {marginBottom: '.5em', marginTop: '.5em'} }>
                     <li>
                         <button
                             onClick={ () => {

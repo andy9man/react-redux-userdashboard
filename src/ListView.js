@@ -14,7 +14,7 @@ class ListView extends Component {
 
   componentDidMount(){
     console.log("Attempting to load users...");
-    this.props.getUsers('users');
+    this.props.getUsers();
   }
 
   render() {
@@ -86,7 +86,7 @@ class ListView extends Component {
                       <li>
                         <button
                           onClick={ () => {
-                              this.props.deleteUser(user.id);
+                              this.props.deleteUser(user.id, true);
                             }}
                           className="alert"
                         >Delete</button>

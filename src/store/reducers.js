@@ -5,7 +5,9 @@ import {
   INITIAL_VIEW,
   LOAD_DATA,
   LOAD_DATA_SUCCESS,
+  LOAD_DATA_ERROR,
   DELETE_USER,
+  EDIT_USER,
   STATE_RESET
 } from './actions'
 
@@ -44,6 +46,8 @@ export const reducer = (state=intialState, action) => {
       return {...state, users: users, loadingData: false};
     case DELETE_USER:
       return {...state, deleteUserSuccess: true};
+    case EDIT_USER:
+      return {...state, [action.payload.type]: action.payload.result}
     case STATE_RESET:
       return {
         ...state,
