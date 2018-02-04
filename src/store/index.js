@@ -1,6 +1,7 @@
 import {createStore, compose, applyMiddleware} from 'redux';
 import thunk from 'redux-thunk';
 import {reducer} from './reducers.js';
+import {USERS_API_URL} from './actions';
 
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
@@ -8,7 +9,6 @@ const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 export default createStore(
   reducer,
   composeEnhancers(
-    applyMiddleware(thunk.withExtraArgument('http://5a75294b08118e0012fd4cb2.mockapi.io/api/v1')),
-    //applyMiddleware(thunk.withExtraArgument('http://5a74994008118e0012fd4c84.mockapi.io')),
+    applyMiddleware(thunk.withExtraArgument(USERS_API_URL))
   )
 )

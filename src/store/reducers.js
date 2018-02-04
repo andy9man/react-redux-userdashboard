@@ -1,13 +1,11 @@
 import {
-  UPDATE_VIEW,
-  EDIT_VIEW,
-  USER_SELECTED,
   INITIAL_VIEW,
+  UPDATE_VIEW,
+  USER_SELECTED,
+
   LOAD_DATA,
-  LOAD_DATA_SUCCESS,
-  LOAD_DATA_ERROR,
-  DELETE_USER,
-  EDIT_USER,
+
+  DATA_STATUS_HANDLER,
   STATE_RESET
 } from './actions'
 
@@ -20,6 +18,9 @@ const intialState = {
   deletUserError: false,
   editUserSuccess: false,
   editUserError: false,
+  addUserSuccess: false,
+  addUserError: false,
+  displayAlert: false,
   viewState: INITIAL_VIEW
 }
 
@@ -39,15 +40,11 @@ export const reducer = (state=intialState, action) => {
       return { ...state, viewState: action.payload };
     case USER_SELECTED:
       return { ...state, userSelected: action.payload };
+    case DATA_STATUS_HANDLER:
+      return { ...state, [action.payload.type]: action.payload.result, displayAlert: action.payload.result};
     case LOAD_DATA:
-      return {...state, loadingData: action.payload};
-    case LOAD_DATA_SUCCESS:
-      const users = action.payload.map( user => new User(user) );
-      return {...state, users: users, loadingData: false};
-    case DELETE_USER:
-      return {...state, deleteUserSuccess: true};
-    case EDIT_USER:
-      return {...state, [action.payload.type]: action.payload.result}
+      const users = action.payload.result.map( user => new User(user) );
+      return {...state, [action.payload.type]: users, loadingData: false};
     case STATE_RESET:
       return {
         ...state,
@@ -55,6 +52,9 @@ export const reducer = (state=intialState, action) => {
         deleteUserError: false,
         editUserSuccess: false,
         editUserError: false,
+        addUserSuccess: false,
+        addUserError: false,
+        displayAlert: false,
         userSelected: undefined
       }
 

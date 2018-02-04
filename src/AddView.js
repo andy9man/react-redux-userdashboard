@@ -1,16 +1,16 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { editUser, updateView, dataResultHandler, INITIAL_VIEW, DATA_STATUS_HANDLER, STATE_RESET } from './store/actions';
+import { addUser, updateView, dataResultHandler, INITIAL_VIEW, DATA_STATUS_HANDLER, STATE_RESET } from './store/actions';
 
-const getUserFromId = (userId, users) => {
-    return users.find(user => user.id === userId);
-}
-
-class EditView extends Component {
+class AddView extends Component {
     constructor(props) {
         super(props);
 
-        this.state = getUserFromId( this.props.userSelected, this.props.users );
+        this.state = {
+            firstName: '',
+            lastName: '',
+            email: ''
+        }
 
         this.handleChange = this.handleChange.bind(this);
     }
@@ -22,14 +22,14 @@ class EditView extends Component {
     render() {
         return (
             <div className="padding-vert-large padding-horiz-large text-left">
-                <h2 className="margin-bottom-medium">Edit User</h2>
+                <h2 className="margin-bottom-medium">Create User</h2>
                 <div className="padding-vert-medium padding-horiz-medium bg-off-white">
                     <form
                         onSubmit={ (e) => {
                             e.preventDefault();
-                            const {firstName, lastName, email, id} = this.state;
-                            const userObj = {firstName, lastName, email, id};
-                            this.props.editUser(userObj, this.props.userSelected);
+                            const {firstName, lastName, email} = this.state;
+                            const userObj = {firstName, lastName, email};
+                            this.props.addUser(userObj);
                         }}
                     >
                         <div className="row">
@@ -52,7 +52,7 @@ class EditView extends Component {
                         </div>
                         <div className="row">
                             <div className="large-5 medium-8 small-12 columns md-text-field with-floating-label">
-                            <button className="button btn-cta success expand" disabled={this.props.editUserSuccess} >Update</button>
+                            <button className="button btn-cta success expand" disabled={this.props.addUserSuccess} >Create</button>
                             </div>
                         </div>
 
@@ -65,15 +65,15 @@ class EditView extends Component {
                     this.props.updateView(INITIAL_VIEW);
                     }}>Back</button>
 
-                {(this.props.editUserSuccess && this.props.displayAlert) &&
+                {(this.props.addUserSuccess && this.props.displayAlert) &&
                     <div style={ {position: 'fixed', bottom: 0, right: 10, zIndex: 1000} } data-notification="" className="notification-box success">
-                        User was successfully updated
+                        User was successfully created
                         {setTimeout( () => { this.props.dataResultHandler('displayAlert', false) }, 3000 )}
                     </div>
                 }
-                { (this.props.editUserError && this.props.displayAlert) &&
+                { (this.props.addUserError && this.props.displayAlert) &&
                     <div style={ {position: 'fixed', bottom: 0, right: 10, zIndex: 1000} } data-notification="" className="notification-box alert">
-                        Error updating user
+                        Error creating user
                         {setTimeout( () => { this.props.dataResultHandler('displayAlert', false) }, 3000 )}
                     </div>
                 }
@@ -84,11 +84,9 @@ class EditView extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        userSelected: state.userSelected,
         displayAlert: state.displayAlert,
-        editUserSuccess: state.editUserSuccess,
-        editUserError: state.editUserError,
-        users: state.users
+        addUserSuccess: state.addUserSuccess,
+        addUserError: state.addUserError,
     }
 }
 
@@ -97,8 +95,8 @@ const mapDispatchToProps = (dispatch) => {
         updateView(view) {
             dispatch( updateView(view) );
         },
-        editUser(userObj, userId) {
-            dispatch( editUser(userObj, userId) );
+        addUser(userObj, userId) {
+            dispatch( addUser(userObj) );
         },
         dataResultHandler(dataFlag, flagValue) {
           dispatch( dataResultHandler(DATA_STATUS_HANDLER, dataFlag, flagValue) );
@@ -109,4 +107,4 @@ const mapDispatchToProps = (dispatch) => {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(EditView);
+export default connect(mapStateToProps, mapDispatchToProps)(AddView);

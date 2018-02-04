@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { deleteUser, updateView, INITIAL_VIEW, EDIT_VIEW, STATE_RESET } from './store/actions';
+import { deleteUser, updateView, dataResultHandler, INITIAL_VIEW, EDIT_VIEW, DATA_STATUS_HANDLER, STATE_RESET } from './store/actions';
 
 const getUserFromId = (userId, users) => {
     return users.find(user => user.id === userId);
@@ -59,9 +59,10 @@ const UserView = props => {
                 </ul>
             </div>
 
-            {props.deleteUserSuccess &&
+            {(props.deleteUserSuccess && props.displayAlert)  &&
                 <div style={ {position: 'fixed', bottom: 0, right: 10, zIndex: 1000} } data-notification="" className="notification-box success">
                     User was successfully deleted
+                    {setTimeout( () => { props.dataResultHandler('displayAlert', false) }, 3000 )}
                 </div>
             }
         </div>
@@ -72,6 +73,7 @@ const mapStateToProps = (state) => {
     return {
         userSelected: state.userSelected,
         deleteUserSuccess: state.deleteUserSuccess,
+        displayAlert: state.displayAlert,
         users: state.users
     }
 }
@@ -83,6 +85,9 @@ const mapDispatchToProps = (dispatch) => {
         },
         deleteUser(address, userId) {
             dispatch( deleteUser(address, userId) );
+        },
+        dataResultHandler(dataFlag, flagValue) {
+          dispatch( dataResultHandler(DATA_STATUS_HANDLER, dataFlag, flagValue) );
         },
         stateReset() {
           dispatch( {type: STATE_RESET} );

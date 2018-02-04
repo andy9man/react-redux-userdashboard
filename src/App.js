@@ -3,7 +3,8 @@ import { connect } from 'react-redux'
 import ListView from './ListView';
 import UserView from './UserView';
 import EditView from './EditView';
-import {INITIAL_VIEW, USER_VIEW, EDIT_VIEW} from './store/actions';
+import AddView from './AddView';
+import {INITIAL_VIEW, USER_VIEW, EDIT_VIEW, ADD_VIEW} from './store/actions';
 
 class App extends Component {
   render() {
@@ -16,6 +17,7 @@ class App extends Component {
         { this.props.appViewState === INITIAL_VIEW && <ListView /> }
         { this.props.appViewState === USER_VIEW && <UserView /> }
         { this.props.appViewState === EDIT_VIEW && <EditView /> }
+        { this.props.appViewState === ADD_VIEW && <AddView /> }
       </div>
     );
   }

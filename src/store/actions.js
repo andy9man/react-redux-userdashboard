@@ -1,55 +1,44 @@
 import axios from 'axios';
 
+export const USERS_API_URL = 'http://5a75294b08118e0012fd4cb2.mockapi.io/api/v1/users';
+//export const USERS_API_URL = 'http://5a74994008118e0012fd4c84.mockapi.io/users';
+
 export const UPDATE_VIEW = 'UPDATE_VIEW';
-export const USER_SELECTED = 'USER_SELECTED';
 export const INITIAL_VIEW = 'INITIAL_VIEW';
 export const USER_VIEW = 'USER_VIEW';
 export const EDIT_VIEW = 'EDIT_VIEW';
+export const ADD_VIEW = 'ADD_VIEW';
 
-export const LOAD_DATA = 'LOAD_DATA';
-export const LOAD_DATA_SUCCESS = 'LOAD_DATA_SUCCESS';
-export const LOAD_DATA_ERROR = 'LOAD_DATA_ERROR';
 
-export const DELETE_USER = 'DELETE_USER';
-export const EDIT_USER = 'EDIT_USER';
-export const STATE_RESET = 'DELETE_RESET';
+export const LOAD_DATA = 'LOAD_DATA_SUCCESS';
+export const USER_SELECTED = 'USER_SELECTED';
+
+export const DATA_STATUS_HANDLER = 'DATA_STATUS_HANDLER';
+export const STATE_RESET = 'STATE_RESET';
 
 export const updateView = (view) => {
   return {type: UPDATE_VIEW, payload: view}
 }
 
-export const loadingData = (bool) => {
+export const dataResultHandler = (actionType, stateObjectType, stateObjectResult) => {
   return {
-    type: LOAD_DATA,
-    payload: bool
+    type: actionType,
+    payload: {
+      type: stateObjectType,
+      result: stateObjectResult
+    }
   }
 }
-
-export const loadingDataSuccess = (data) => {
-  return {
-    type: LOAD_DATA_SUCCESS,
-    payload: data
-  }
-}
-
-export const deleteUserSuccess = (bool) => {
-  return {
-    type: DELETE_USER,
-    payload: bool
-  }
-}
-
 
 export const getUsers = () => {
   return (dispatch, getState, url) => {
-    dispatch( loadingData(true) );
+    //dispatch( loadingData(true) );
+    dispatch( dataResultHandler(DATA_STATUS_HANDLER, 'loadingData', true) );
+    console.log(`Getting User Data... ${url}`);
 
-    console.log(`Getting User Data... ${url}/users`);
-
-    axios.get(`${url}/users`)
+    axios.get(`${url}`)
       .then( ({data: users}) => {
-        //setTimeout( () => { dispatch( loadingDataSuccess(users) ) }, 1000);
-        dispatch( loadingDataSuccess(users) );
+        setTimeout( () => { dispatch( dataResultHandler(LOAD_DATA, 'users', users) ) }, 1000);
       })
       .catch( error => {
         if (error.response) {
@@ -68,8 +57,9 @@ export const getUsers = () => {
           // Something happened in setting up the request that triggered an Error
           console.log(`General Error: ${error.message}`);
         }
-        console.log("Error has occured in obtaining data...");
+        console.log("Error has occured in loading data...");
         console.log(error);
+        dispatch( dataResultHandler(DATA_STATUS_HANDLER, 'loadingError', true) );
 
     })
   }
@@ -77,13 +67,11 @@ export const getUsers = () => {
 
 export const editUser = (userObj, userId) => {
   return (dispatch, getState, url) => {
-    //dispatch( deleteData(true))
     console.log(`Updating user... ${userId}`);
     console.log(userObj);
     axios.put(`${url}/${userId}`, userObj)
       .then( (response) => {
-        console.log(response);
-        dispatch( {type: EDIT_USER, payload: {type: 'editUserSuccess', result: true}});
+        dispatch( {type: DATA_STATUS_HANDLER, payload: {type: 'editUserSuccess', result: true}} );
       })
       .catch( error => {
         if (error.response) {
@@ -102,9 +90,9 @@ export const editUser = (userObj, userId) => {
           // Something happened in setting up the request that triggered an Error
           console.log(`General Error: ${error.message}`);
         }
-        console.log("Error has occured in obtaining data...");
+        console.log("Error has occured in updating user...");
         console.log(error);
-        dispatch( {type: EDIT_USER, payload: {type: 'editUserError', result: true}});
+        dispatch( {type: DATA_STATUS_HANDLER, payload: {type: 'editUserError', result: true}} );
     })
   }
 }
@@ -112,9 +100,9 @@ export const editUser = (userObj, userId) => {
 export const deleteUser = (userId, callGetUsers) => {
   return (dispatch, getState, url) => {
     console.log(`Deleting user... ${userId}`);
-    axios.delete(`${url}/users/${userId}`)
+    axios.delete(`${url}/${userId}`)
       .then( (response) => {
-        dispatch( deleteUserSuccess(true) );
+        dispatch( {type: DATA_STATUS_HANDLER, payload: {type: 'deleteUserSuccess', result: true}} );
         callGetUsers && dispatch( getUsers() );
       })
       .catch( error => {
@@ -134,22 +122,21 @@ export const deleteUser = (userId, callGetUsers) => {
           // Something happened in setting up the request that triggered an Error
           console.log(`General Error: ${error.message}`);
         }
-        console.log("Error has occured in obtaining data...");
+        console.log("Error has occured in deleteing user...");
         console.log(error);
-
+        dispatch( {type: DATA_STATUS_HANDLER, payload: {type: 'deleteUserError', result: true}} );
     })
   }
 }
 
-export const addUser = (address) => {
-  const {email, username, avatar} = this.state;
-  const userObj = {email, username, avatar}
-
+export const addUser = (userObj) => {
   return (dispatch, getState, url) => {
-    axios.post(`${url}/`, userObj)
+    console.log('Adding user...');
+    console.log(userObj);
+    axios.post(url, userObj)
       .then( response => {
         console.log(response);
-        //this.getUsers();
+        dispatch( {type: DATA_STATUS_HANDLER, payload: {type: 'addUserSuccess', result: true}} );
       })
       .catch( error => {
         if (error.response) {
@@ -170,6 +157,7 @@ export const addUser = (address) => {
         }
         console.log("Error has occured in obtaining data...");
         console.log(error);
+        dispatch( {type: DATA_STATUS_HANDLER, payload: {type: 'addUserError', result: true}} );
     })
   }
 }

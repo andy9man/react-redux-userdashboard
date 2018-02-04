@@ -7,6 +7,7 @@ import {
   USER_SELECTED,
   USER_VIEW,
   EDIT_VIEW,
+  ADD_VIEW,
   STATE_RESET
 } from './store/actions';
 
@@ -15,6 +16,7 @@ class ListView extends Component {
   componentDidMount(){
     console.log("Attempting to load users...");
     this.props.getUsers();
+    this.props.stateReset();
   }
 
   render() {
@@ -22,10 +24,19 @@ class ListView extends Component {
     this.props.deleteUserSuccess &&
       setTimeout( () => {
         this.props.stateReset();
-      }, 2000)
+      }, 3000)
 
     return (
       <div className="padding-horiz-xlarge padding-vert-xlarge">
+
+        <div
+          style={ {fontWeight: '800'} }
+          className="row text-right heading-xlarge padding-right-medium"
+        >
+          <a style={ {textDecoration: 'none'} } onClick={
+            () => (this.props.updateView(ADD_VIEW))
+          }>&#43;</a>
+        </div>
 
         {this.props.loadingData && <div
           style={ {
@@ -98,6 +109,12 @@ class ListView extends Component {
           </tbody>
 
         </table>
+
+        <div className="row">
+          <a onClick={
+            () => (this.props.updateView(ADD_VIEW))
+          }><strong>&#43;&nbsp;</strong>Add New User</a>
+        </div>
 
         {/* -- ALERTS SECTION -- */}
 
