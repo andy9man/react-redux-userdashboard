@@ -4,10 +4,12 @@ import {
   getUsers,
   updateView,
   deleteUser,
+  dataResultHandler,
   USER_SELECTED,
   USER_VIEW,
   EDIT_VIEW,
   ADD_VIEW,
+  DATA_STATUS_HANDLER,
   STATE_RESET
 } from './store/actions';
 
@@ -33,27 +35,20 @@ class ListView extends Component {
           style={ {fontWeight: '800'} }
           className="row text-right heading-xlarge padding-right-medium"
         >
-          <a style={ {textDecoration: 'none'} } onClick={
-            () => (this.props.updateView(ADD_VIEW))
-          }>&#43;</a>
+          <div className="small-6 columns text-left padding-left-medium">
+            <a style={ {textDecoration: 'none'} } onClick={ () => {
+                  this.props.getUsers();
+                  this.props.stateReset();
+            }}>&#8635;</a>
+          </div>
+          <div className="small-6 columns text-right padding-right-medium">
+            <a style={ {textDecoration: 'none'} } onClick={
+              () => (this.props.updateView(ADD_VIEW))
+            }>&#43;</a>
+          </div>
         </div>
 
-        {this.props.loadingData && <div
-          style={ {
-            width: '100%',
-            height: '100%',
-            top: '0',
-            position: 'fixed',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center'
-          } }
-        >
-          <span className="loading-indicator xlarge"></span>
-        </div>}
-
         <table className="table" summary="">
-
           <thead>
             <tr>
               <th>Name</th>
@@ -114,7 +109,27 @@ class ListView extends Component {
           </tbody>
 
         </table>
-
+        {this.props.loadingError && <div className="row">
+          <div className="columns small-12 medium-8 small-centered margin-bottom-xlarge">
+            <div className="notification-banner standalone alert">
+              <span className="icon"></span>
+              <h3>Don't Panic ... but there is no User Data!</h3>
+              <p>
+                Looks like we are having issues obtaining user data.
+                Wait a few moments and try again, and/or check your internet connection.
+              </p>
+              <p>
+                <em>Please contact us if the issue persists</em>
+              </p>
+              <div>
+                <button onClick={ () => {
+                  this.props.getUsers();
+                  this.props.stateReset();
+                }}>Try Again</button>
+              </div>
+            </div>
+          </div>
+        </div>}
         <div className="row">
           <a onClick={
             () => (this.props.updateView(ADD_VIEW))
@@ -123,9 +138,30 @@ class ListView extends Component {
 
         {/* -- ALERTS SECTION -- */}
 
-        {this.props.deleteUserSuccess &&
+        {(this.props.loadingData && !this.props.loadingError) && <div
+          style={ {
+            width: '100%',
+            height: '100%',
+            top: '0',
+            position: 'fixed',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center'
+          } }
+        >
+          <span className="loading-indicator xlarge"></span>
+        </div>}
+
+        {(this.props.deleteUserSuccess && this.props.displayAlert) &&
           <div style={ {position: 'fixed', bottom: 0, right: 10, zIndex: 1000} } data-notification="" className="notification-box success">
               User was successfully deleted
+              {setTimeout( () => { this.props.dataResultHandler('displayAlert', false) }, 3000 )}
+          </div>
+        }
+        {(this.props.loadingError && this.props.displayAlert) &&
+          <div style={ {position: 'fixed', bottom: 0, right: 10, zIndex: 1000} } data-notification="" className="notification-box alert">
+              Error loading user data, try again later
+              {setTimeout( () => { this.props.dataResultHandler('displayAlert', false) }, 3000 )}
           </div>
         }
       </div>
@@ -136,6 +172,7 @@ class ListView extends Component {
 const mapStateToProps = (state) => {
   return {
     viewState: state.viewState,
+    displayAlert: state.displayAlert,
     loadingData: state.loadingData,
     loadingError: state.loadingError,
     deleteUserSuccess: state.deleteUserSuccess,
@@ -156,6 +193,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     deleteUser(address, userId) {
         dispatch( deleteUser(address, userId) );
+    },
+    dataResultHandler(dataFlag, flagValue) {
+      dispatch( dataResultHandler(DATA_STATUS_HANDLER, dataFlag, flagValue) );
     },
     stateReset() {
       dispatch( {type: STATE_RESET} );

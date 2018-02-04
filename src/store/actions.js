@@ -1,5 +1,4 @@
 import axios from 'axios';
-
 export const USERS_API_URL = 'http://5a75294b08118e0012fd4cb2.mockapi.io/api/v1/users';
 //export const USERS_API_URL = 'http://5a74994008118e0012fd4c84.mockapi.io/users';
 
