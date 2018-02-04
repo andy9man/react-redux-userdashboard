@@ -68,7 +68,12 @@ class ListView extends Component {
             {!this.props.loadingData &&
               this.props.users.map( user => (
                 <tr key={user.id}>
-                  <td>{`${user.firstName} ${user.lastName}`}</td>
+                  <td>
+                    <a onClick={ () => {
+                          this.props.userSelected(user.id);
+                          this.props.updateView(USER_VIEW);
+                        }}>{`${user.firstName} ${user.lastName}`}</a>
+                  </td>
                   <td>{user.email}</td>
                   <td>{
                     ( (d) => {

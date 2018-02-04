@@ -38,7 +38,7 @@ export const getUsers = () => {
 
     axios.get(`${url}`)
       .then( ({data: users}) => {
-        setTimeout( () => { dispatch( dataResultHandler(LOAD_DATA, 'users', users) ) }, 1000);
+        setTimeout( () => { dispatch( dataResultHandler(LOAD_DATA, 'users', users) ) }, 1);
       })
       .catch( error => {
         if (error.response) {
